@@ -30,6 +30,7 @@ function F:RouteTo(node)
  return true
 end
 function F:RenderPath()
+ local now=GetTime();if self.lastPathDraw and now-self.lastPathDraw<.15 then return end;self.lastPathDraw=now
  self.pathLines=self.pathLines or {};for _,line in ipairs(self.pathLines)do line:Hide()end
  local map=WorldMapFrame
  if not self.db.pathing or not self.path or not map or not map:IsShown()or not map.GetCanvas or (map.IsForbidden and map:IsForbidden())then return end

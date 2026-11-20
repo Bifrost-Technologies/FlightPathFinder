@@ -19,3 +19,5 @@ This beta does not bundle whole-world terrain data. Unknown terrain needs an imp
 Author build: run `scripts/build-navigation-release.ps1 -LuaRunner <runner>` for the flight/navigation bundle, or `scripts/build-flight-release.ps1` for the independent finder. Source is readable Lua under MIT.
 
 Data/API provenance: [Blizzard-generated TaxiMap declarations](https://raw.githubusercontent.com/Gethe/wow-ui-source/forever/Interface/AddOns/Blizzard_APIDocumentationGenerated/TaxiMapDocumentation.lua), [map declarations](https://raw.githubusercontent.com/Gethe/wow-ui-source/forever/Interface/AddOns/Blizzard_APIDocumentationGenerated/MapDocumentation.lua). The addon reads live client data; it does not bundle Questie code, assets or coordinate databases.
+
+1.1.1 beta: flight discovery includes Horde nodes and displays your current faction plus optional neutral hubs. Path drawing is limited to roughly 7 updates per second to reduce map redraw overhead. Existing road-preferred navigation and missing-coverage limits apply. Tests and live map validation skipped by request.

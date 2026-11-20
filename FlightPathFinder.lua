@@ -39,7 +39,7 @@ function F:ScanMap(map,force)
  for i=1,math.min(1000,#rows)do local row=rows[i]
   if type(row)=='table'then
    local id,faction,name=pub(row.nodeID),pub(row.faction),pub(row.name);local x,y=self:Vector(pub(row.position))
-   if self:Number(id,1,999999)and id%1==0 and(faction==2 or faction==0)and type(name)=='string'and #name>0 and #name<=200 and not name:find('[%c|]')and x and y then
+   if self:Number(id,1,999999)and id%1==0 and(faction==2 or faction==1 or faction==0)and type(name)=='string'and #name>0 and #name<=200 and not name:find('[%c|]')and x and y then
     local node=self.nodes[id];local n=self.nodeCount or 0
     if node or n<2000 then
      if not node then node={id=id,views={}};self.nodes[id]=node;self.nodeCount=n+1 end
@@ -61,7 +61,7 @@ function F:ScanMap(map,force)
 end
 function F:List(query)
  local list={};query=type(query)=='string'and query:lower()or ''
- for _,node in pairs(self.nodes)do if(node.faction==2 or self.db.neutral)and(query==''or(node.name..' '..(node.zone or '')):lower():find(query,1,true))then list[#list+1]=node end end
+ for _,node in pairs(self.nodes)do if(node.faction==(self:Call(UnitFactionGroup,'player')=='Horde'and 1 or 2)or node.faction==0 and self.db.neutral)and(query==''or(node.name..' '..(node.zone or '')):lower():find(query,1,true))then list[#list+1]=node end end
  table.sort(list,function(a,b)if a.zone~=b.zone then return(a.zone or '')<(b.zone or '')end;return a.name<b.name end);return list
 end
 function F:Convert(map,x,y,target)

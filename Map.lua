@@ -17,7 +17,7 @@ function F:Render()
      if not GameTooltip or not p.node then return end;local n=p.node;GameTooltip:SetOwner(p,'ANCHOR_RIGHT');GameTooltip:SetText(n.name)
      GameTooltip:AddLine('Flight master / departure point',.6,.85,1);GameTooltip:AddLine((n.zone or 'Map '..n.map)..(' · %.1f, %.1f'):format(n.x*100,n.y*100),1,1,1)
      local known=self.character.nodes[n.id];GameTooltip:AddLine(known==true and 'Learned on this character'or known==false and 'Not yet learned'or 'Discovery state unavailable',1,.85,.35)
-     GameTooltip:AddLine(n.faction==0 and 'Neutral hub usable by Alliance'or 'Alliance flight point',.6,.85,1);GameTooltip:AddLine('Click to locate. Visit the flight master to unlock or fly.',.8,.8,.8,true);GameTooltip:Show()
+     GameTooltip:AddLine(n.faction==0 and 'Neutral flight hub'or (n.faction==1 and 'Horde flight point'or 'Alliance flight point'),.6,.85,1);GameTooltip:AddLine('Click to locate. Visit the flight master to unlock or fly.',.8,.8,.8,true);GameTooltip:Show()
     end);pin:SetScript('OnLeave',function()if GameTooltip then GameTooltip:Hide()end end)
     pin:SetScript('OnClick',function(p)if p.node then self:Locate(p.node)end end)
    end
