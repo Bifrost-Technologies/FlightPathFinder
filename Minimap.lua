@@ -5,7 +5,11 @@ end
 function F:SetPathingEnabled(on)
  self.db.pathing=on==true
  if not self.db.pathing and self.StopPath then self:StopPath('Pathing disabled.')
- elseif self.db.pathing and self.selected and self.RouteTo then self:RouteTo(self.nodes[self.selected])end
+ elseif self.db.pathing then
+  if self.selected and self.nodes[self.selected] and self.RouteTo then self:RouteTo(self.nodes[self.selected])
+  else self.pathStatus='Select a flight master in the directory or click its map marker to draw a route.';self:Show() end
+ end
+ if DEFAULT_CHAT_FRAME then DEFAULT_CHAT_FRAME:AddMessage('Flight paths: '..(self.pathStatus or 'Pathing enabled. Select a destination.'))end
  self:RefreshMinimap();self:Refresh()
 end
 function F:RefreshMinimap()
@@ -27,10 +31,10 @@ function F:EnsureMinimap()
  local border=b:CreateTexture(nil,'OVERLAY');border:SetTexture('Interface\\Minimap\\MiniMap-TrackingBorder');border:SetSize(52,52);border:SetPoint('TOPLEFT',0,0)
  b:SetHighlightTexture('Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight');self:PlaceMinimap()
  local menu=CreateFrame('Frame','FlightPathFinderMinimapMenu',UIParent,'BackdropTemplate');self.minimapMenu=menu
- menu:SetSize(205,90);menu:SetPoint('TOPRIGHT',b,'BOTTOMLEFT',0,-4);menu:SetFrameStrata('DIALOG');menu:SetClampedToScreen(true);menu:EnableMouse(true)
+ menu:SetSize(265,90);menu:SetPoint('TOPRIGHT',b,'BOTTOMLEFT',0,-4);menu:SetFrameStrata('DIALOG');menu:SetClampedToScreen(true);menu:EnableMouse(true)
  menu:SetBackdrop({bgFile='Interface\\Buttons\\WHITE8X8',edgeFile='Interface\\Tooltips\\UI-Tooltip-Border',edgeSize=12});menu:SetBackdropColor(.035,.045,.065,1);menu:SetBackdropBorderColor(.2,.55,.8,1)
  self.minimapChecks={}
- for i,entry in ipairs({{'markers','Enable markers'},{'pathing','Enable pathing'}})do
+ for i,entry in ipairs({{'markers','Enable markers'},{'pathing','Enable route guidance'}})do
   local key=entry[1];local box=CreateFrame('CheckButton',nil,menu,'UICheckButtonTemplate');box:SetSize(26,26);box:SetPoint('TOPLEFT',12,-12-(i-1)*34)
   local text=box:CreateFontString(nil,'OVERLAY','GameFontHighlight');text:SetPoint('LEFT',box,'RIGHT',4,0);text:SetText(entry[2]);text:SetTextColor(.4,.75,1)
   box:SetScript('OnClick',function(s)if key=='markers'then self:SetMarkersEnabled(s:GetChecked()==true)else self:SetPathingEnabled(s:GetChecked()==true)end end)

@@ -10,6 +10,8 @@ function F:Init()
  if self.db.pathing==nil then self.db.pathing=false end
  self.db.minimapAngle=self:Number(self.db.minimapAngle,-360,360)or 225
  FlightPathFinderCharDB=type(FlightPathFinderCharDB)=='table'and FlightPathFinderCharDB or {};self.character=FlightPathFinderCharDB;self.character.nodes=self.character.nodes or {}
+ if self.character.discoverySchema~=2 then self.character.nodes={};self.character.discoveryEvidence={};self.character.discoverySchema=2 end
+ self.character.discoveryEvidence=self.character.discoveryEvidence or {}
  self:QueueMap(1414);self:QueueMap(1415);self:QueueMap(946);self:QueueMap(947)
  local api=C_Map
  if api and api.GetMapChildrenInfo then
@@ -52,7 +54,9 @@ function F:ScanMap(map,force)
       if detailRank>(node.rank or -1)then local dx,dy=self:Convert(map,x,y,detailID);if dx then node.map,node.x,node.y,node.rank=detailID,dx,dy,detailRank;node.zone=pub(detailed.name)or node.zone;node.views[detailID]={x=dx,y=dy}end end
       self:QueueMap(detailID)
      end
-     local unknown=pub(row.isUndiscovered);if type(unknown)=='boolean'then self.character.nodes[id]=not unknown end
+     local unknown=pub(row.isUndiscovered)
+     if unknown==true then self.character.nodes[id]=false;self.character.discoveryEvidence[id]='native-undiscovered'
+     elseif unknown==false then self.character.nodes[id]=true;self.character.discoveryEvidence[id]='native-discovered' end
     end
    end
   end
@@ -82,13 +86,31 @@ function F:Locate(node)
  if not WorldMapFrame or not WorldMapFrame.SetMapID then return false end
  WorldMapFrame:Show();WorldMapFrame:SetMapID(node.map);self.selected=node.id;self:Render();return true
 end
+function F:CaptureLearnedNodes()
+ -- Only a flight master's open taxi map provides positive discovery evidence.
+ local taxiMap=self:Call(GetTaxiMapID)
+ if not taxiMap then return end
+ local rows=self:Call(C_TaxiMap and C_TaxiMap.GetAllTaxiNodes,taxiMap)
+ if type(rows)~='table'then return end
+ local states=Enum and Enum.FlightPathState
+ for _,row in ipairs(rows)do
+  local id,state=pub(row.nodeID),pub(row.state)
+  if self:Number(id,1,999999)and (state==(states and states.Current or 0)or state==(states and states.Reachable or 1))then
+   self.character.nodes[id]=true;self.character.discoveryEvidence[id]='flight-master-confirmed'
+  end
+ end
+end
+function F:DiscoveryText(node)
+ local known=self.character.nodes[node.id]
+ return known==true and 'Confirmed learned'or known==false and 'Not learned'or 'Discovery unknown — visit a flight master to confirm'
+end
 local frame=CreateFrame('Frame')
 for _,event in ipairs({'ADDON_LOADED','PLAYER_LOGIN','TAXIMAP_OPENED','TAXI_NODE_STATUS_CHANGED'})do pcall(frame.RegisterEvent,frame,event)end
 frame:SetScript('OnEvent',function(_,event,name)
  if event=='ADDON_LOADED'then if name=='FlightPathFinder'then F:Init()end;return end
  if not F.db then return end
  local map=F:Call(C_Map and C_Map.GetBestMapForUnit,'player');if map then F:ScanMap(map,true)end
- if event=='TAXIMAP_OPENED'or event=='TAXI_NODE_STATUS_CHANGED'then for _,id in ipairs({1414,1415})do F:ScanMap(id,true)end end
+ if event=='TAXIMAP_OPENED'or event=='TAXI_NODE_STATUS_CHANGED'then F:CaptureLearnedNodes();for _,id in ipairs({1414,1415})do F:ScanMap(id,true)end end
  if F.Refresh then F:Refresh()end
  if F.EnsureMinimap then F:EnsureMinimap()end
 end)

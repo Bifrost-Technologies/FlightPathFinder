@@ -1,3 +1,13 @@
+## 1.1.3-beta.2
+
+Current route drawing and guidance modules packaged with image-weight navigation. Refreshed documentation removes obsolete private-navigation and route-recording instructions.
+
+Private executables/automation excluded. Packaging-only review; no new gameplay or test suites. Client: Forever WoW 1.60.1 / Interface 16001.
+
+## 1.1.2-beta.1
+
+Bundled navigation includes audited image risk weights and explicit image-only dungeon coverage status. No minimap route-line overlay or verified cliff detection is claimed. Source/syntax review only; no behavioral/live tests run.
+
 # 1.1.0-beta.1
 
 - Added draggable minimap icon with independent marker/pathing checkboxes.
