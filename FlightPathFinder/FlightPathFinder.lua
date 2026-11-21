@@ -9,9 +9,10 @@ function F:Init()
  if self.db.enabled==nil then self.db.enabled=true end;if self.db.neutral==nil then self.db.neutral=true end;self.db.size=self:Number(self.db.size,24,64)or 38
  if self.db.pathing==nil then self.db.pathing=false end
  self.db.minimapAngle=self:Number(self.db.minimapAngle,-360,360)or 225
- FlightPathFinderCharDB=type(FlightPathFinderCharDB)=='table'and FlightPathFinderCharDB or {};self.character=FlightPathFinderCharDB;self.character.nodes=self.character.nodes or {}
+ FlightPathFinderCharDB=type(FlightPathFinderCharDB)=='table'and FlightPathFinderCharDB or {};self.character=FlightPathFinderCharDB;self.character.nodes=type(self.character.nodes)=='table'and self.character.nodes or {}
  if self.character.discoverySchema~=2 then self.character.nodes={};self.character.discoveryEvidence={};self.character.discoverySchema=2 end
- self.character.discoveryEvidence=self.character.discoveryEvidence or {}
+ self.character.discoveryEvidence=type(self.character.discoveryEvidence)=='table'and self.character.discoveryEvidence or {}
+ self.character.approaches=type(self.character.approaches)=='table'and self.character.approaches or {}
  self:QueueMap(1414);self:QueueMap(1415);self:QueueMap(946);self:QueueMap(947)
  local api=C_Map
  if api and api.GetMapChildrenInfo then
@@ -54,9 +55,7 @@ function F:ScanMap(map,force)
       if detailRank>(node.rank or -1)then local dx,dy=self:Convert(map,x,y,detailID);if dx then node.map,node.x,node.y,node.rank=detailID,dx,dy,detailRank;node.zone=pub(detailed.name)or node.zone;node.views[detailID]={x=dx,y=dy}end end
       self:QueueMap(detailID)
      end
-     local unknown=pub(row.isUndiscovered)
-     if unknown==true then self.character.nodes[id]=false;self.character.discoveryEvidence[id]='native-undiscovered'
-     elseif unknown==false then self.character.nodes[id]=true;self.character.discoveryEvidence[id]='native-discovered' end
+     local unknown=pub(row.isUndiscovered);if unknown==true then self.character.nodes[id]=false;self.character.discoveryEvidence[id]='native-undiscovered' end
     end
    end
   end

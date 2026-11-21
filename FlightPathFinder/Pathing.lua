@@ -18,13 +18,18 @@ function F:RouteTo(node)
  local destination={x=x,y=y,map=map}
  -- A flight master personally visited supplies a confirmed standing height.
  local known=self.character.approaches and self.character.approaches[node.id]
- if known and known.map==map and math.abs(known.x-x)<30 and math.abs(known.y-y)<30 then destination=N:Copy(known)end
+ if type(known)=='table'and N:Point(known)and known.map==map and math.abs(known.x-x)<30 and math.abs(known.y-y)<30 then destination=N:Copy(known)end
  self.selected=node.id;self.pathStatus='Planning a road-preferred terrain route…'
  local generation=self.pathGeneration;self.pathOrigin=from;self.pathRequested=GetTime()
  self.cancelPath=N:Request(from,destination,function(route,reason)
   if self.pathGeneration~=generation or not self.db.pathing then return end
-  self.path=route;self.pathIndex=2
-  self.pathStatus=route and ('Follow the mapped approach to '..node.name..'. '..route.source)or reason
+  if route then
+   local valid=type(route)=='table'and type(route.points)=='table'and #route.points>=2 and #route.points<=20000
+   if valid then for _,point in ipairs(route.points)do if not N:Location(point)or point.map~=from.map then valid=false;break end end end
+   if not valid then route=nil;reason='Navigation returned an invalid route; guidance was not started.'end
+  end
+  self.path=route;self.pathIndex=route and 2 or nil
+  self.pathStatus=route and ('Follow the mapped approach to '..node.name..'. '..tostring(route.source or 'World Navigation'))or reason
   self:Refresh();self:RenderPath()
  end)
  return true

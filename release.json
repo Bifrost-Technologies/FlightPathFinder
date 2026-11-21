@@ -1,0 +1,8 @@
+{
+  "name": "FlightPathFinder",
+  "primary": "FlightPathFinder",
+  "addons": [
+    "FlightPathFinder",
+    "WorldNavigation"
+  ]
+}

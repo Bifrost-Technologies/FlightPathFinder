@@ -40,7 +40,7 @@ Built for **Forever WoW 1.60.1 / Interface 16001**. Open `/fpf`. Other Retail/Cl
 | Release options | Release after moderation approval, or choose manual scheduling in your account |
 | Supported client / version | Forever WoW 1.60.1, Interface 16001. Select its actual supported entry if offered; do not relabel it as another client. Confirm with CurseForge support if this client is not listed. |
 | Related projects | None; public WorldNavigation is included. |
-| SHA-256 | `8fa239afa8806d180e99c03656d0200c45729f3fad5e8075e37724b1a5a1678e` |
+| SHA-256 | `c8cc6c14099ffddd25bbb465eb0a2d951fd27ad174b4f8a51cb834dc8ae0e8e9` |
 | ZIP root addon folders (2) | `FlightPathFinder`, `WorldNavigation` |
 
 ### Changelog — copy/paste

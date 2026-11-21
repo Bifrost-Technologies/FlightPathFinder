@@ -1,3 +1,7 @@
+## 1.1.3-beta.3
+
+Repair saved character tables and validate asynchronous route results before displaying guidance. Keep cancellation generations and conservative learned-flight evidence. Include the matching navigation fixes and license text. Live native map/waypoint testing remains required.
+
 ## 1.1.3-beta.2
 
 Current route drawing and guidance modules packaged with image-weight navigation. Refreshed documentation removes obsolete private-navigation and route-recording instructions.

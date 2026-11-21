@@ -1,0 +1,16 @@
+
+# Public commit packaging
+!/.github/workflows/release.yml
+!/scripts/release.py
+!/release.json
+!*.tga
+/dist/
+__pycache__/
+.env
+.env.*
+*.exe
+*.pdb
+
+!/docs/FEATURE-AUDIT-2026-11-20.json
+
+!/docs/FEATURE-AUDIT-2026-11-20.json
